@@ -1,6 +1,6 @@
-import { eq } from "drizzle-orm";
+import { eq, and, desc, sql } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/mysql2";
-import { InsertUser, users } from "../drizzle/schema";
+import { InsertUser, users, admins, members, contributions, announcements, events, gallery, meetingMinutes, fundTransactions } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
 let _db: ReturnType<typeof drizzle> | null = null;
@@ -89,4 +89,68 @@ export async function getUserByOpenId(openId: string) {
   return result.length > 0 ? result[0] : undefined;
 }
 
-// TODO: add feature queries here as your schema grows.
+// MMU ELC Database Helpers
+
+export async function getAdminByEmail(email: string) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(admins).where(eq(admins.email, email)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function generateMembershipId() {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+  
+  const year = new Date().getFullYear();
+  const result = await db.select({ count: sql<number>`COUNT(*)` }).from(members).where(sql`YEAR(${members.joinedDate}) = ${year}`);
+  const count = (result[0]?.count || 0) + 1;
+  const paddedNumber = String(count).padStart(4, '0');
+  return `ELC-${year}-${paddedNumber}`;
+}
+
+export async function getAllMembers(limit = 50, offset = 0) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(members).limit(limit).offset(offset);
+}
+
+export async function getMemberById(id: number) {
+  const db = await getDb();
+  if (!db) return undefined;
+  const result = await db.select().from(members).where(eq(members.id, id)).limit(1);
+  return result.length > 0 ? result[0] : undefined;
+}
+
+export async function getAnnouncementsByStatus(isPublished = true, limit = 20) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(announcements).where(eq(announcements.isPublished, isPublished)).orderBy(desc(announcements.createdAt)).limit(limit);
+}
+
+export async function getEventsByDate(upcomingOnly = true) {
+  const db = await getDb();
+  if (!db) return [];
+  const today = new Date().toISOString().split('T')[0];
+  const query = upcomingOnly ? sql`${events.eventDate} >= ${today}` : sql`${events.eventDate} < ${today}`;
+  return await db.select().from(events).where(and(eq(events.isPublished, true), query)).orderBy(events.eventDate);
+}
+
+export async function getContributionsByMember(memberId: number) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(contributions).where(eq(contributions.memberId, memberId)).orderBy(desc(contributions.createdAt));
+}
+
+export async function getTotalFundBalance() {
+  const db = await getDb();
+  if (!db) return 0;
+  const result = await db.select({ balance: sql<number>`COALESCE(SUM(CASE WHEN ${fundTransactions.type} = 'Income' THEN ${fundTransactions.amount} ELSE -${fundTransactions.amount} END), 0)` }).from(fundTransactions);
+  return parseFloat(result[0]?.balance?.toString() || '0');
+}
+
+export async function getGalleryImages(limit = 50) {
+  const db = await getDb();
+  if (!db) return [];
+  return await db.select().from(gallery).orderBy(desc(gallery.createdAt)).limit(limit);
+}
