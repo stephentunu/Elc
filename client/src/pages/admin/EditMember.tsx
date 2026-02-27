@@ -27,7 +27,7 @@ export default function EditMember({ memberId }: EditMemberProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-2xl mx-auto">
         <Button onClick={() => setLocation("/admin/members")} variant="ghost" className="mb-6">
           <ArrowLeft className="w-4 h-4 mr-2" />
@@ -35,7 +35,7 @@ export default function EditMember({ memberId }: EditMemberProps) {
         </Button>
 
         <Card className="p-8">
-          <h1 className="text-3xl font-bold text-foreground mb-2">Edit Member</h1>
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground mb-2">Edit Member</h1>
           <p className="text-gray-600 mb-6">Member ID: ELC-2024-0001</p>
 
           <form onSubmit={handleSubmit} className="space-y-6">

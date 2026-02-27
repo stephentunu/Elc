@@ -27,11 +27,11 @@ export default function ManageAnnouncements() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Manage Announcements</h1>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">Manage Announcements</h1>
             <p className="text-gray-600">Create and manage club announcements</p>
           </div>
           <Button onClick={() => setShowModal(true)} size="lg">

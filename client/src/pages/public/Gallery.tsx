@@ -16,7 +16,7 @@ export default function Gallery() {
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <a href="/" className="text-2xl font-bold text-primary">MMU ELC</a>
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             <a href="/" className="text-foreground hover:text-primary">Home</a>
             <a href="/about" className="text-foreground hover:text-primary">About</a>
             <a href="/members" className="text-foreground hover:text-primary">Members</a>
@@ -36,7 +36,7 @@ export default function Gallery() {
 
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {mockGallery.map((photo) => (
               <Card key={photo.id} className="overflow-hidden hover:shadow-lg transition cursor-pointer group">
                 <div className="bg-gradient-to-br from-primary/20 to-primary/5 aspect-square flex items-center justify-center group-hover:from-primary/30 group-hover:to-primary/10 transition">

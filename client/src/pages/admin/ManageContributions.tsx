@@ -32,11 +32,11 @@ export default function ManageContributions() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Manage Contributions</h1>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">Manage Contributions</h1>
             <p className="text-gray-600">Track member subscription payments</p>
           </div>
           <Button onClick={() => setShowModal(true)} size="lg">
@@ -45,18 +45,18 @@ export default function ManageContributions() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 md:mb-8">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Total Collected</p>
-            <p className="text-3xl font-bold text-primary">KES {totalAmount.toLocaleString()}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">KES {totalAmount.toLocaleString()}</p>
           </Card>
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Unpaid Members</p>
-            <p className="text-3xl font-bold text-red-600">{unpaidCount}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-red-600">{unpaidCount}</p>
           </Card>
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Total Members</p>
-            <p className="text-3xl font-bold text-blue-600">{mockContributions.length}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-blue-600">{mockContributions.length}</p>
           </Card>
         </div>
 

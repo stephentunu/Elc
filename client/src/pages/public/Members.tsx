@@ -32,7 +32,7 @@ export default function Members() {
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <a href="/" className="text-2xl font-bold text-primary">MMU ELC</a>
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             <a href="/" className="text-foreground hover:text-primary">Home</a>
             <a href="/about" className="text-foreground hover:text-primary">About</a>
             <a href="/members" className="text-foreground hover:text-primary font-semibold">Members</a>
@@ -52,7 +52,7 @@ export default function Members() {
 
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <div className="mb-8">
+          <div className="mb-6 md:mb-8">
             <div className="relative">
               <Search className="absolute left-3 top-3 w-5 h-5 text-gray-400" />
               <Input
@@ -65,7 +65,7 @@ export default function Members() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredMembers.map((member) => (
               <Card key={member.id} className="p-6 hover:shadow-lg transition">
                 <div className="flex items-center justify-between mb-4">
@@ -76,7 +76,7 @@ export default function Members() {
                     {member.status}
                   </span>
                 </div>
-                <h3 className="text-lg font-semibold text-foreground mb-1">{member.fullName}</h3>
+                <h3 className="text-base md:text-lg font-semibold text-foreground mb-1">{member.fullName}</h3>
                 <p className="text-primary font-medium text-sm mb-3">{member.role}</p>
                 <div className="space-y-2 text-sm text-gray-600">
                   <p><strong>ID:</strong> {member.membershipId}</p>

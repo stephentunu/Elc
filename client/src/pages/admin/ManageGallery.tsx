@@ -27,11 +27,11 @@ export default function ManageGallery() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
+        <div className="flex justify-between items-center mb-6 md:mb-8">
           <div>
-            <h1 className="text-3xl font-bold text-foreground">Manage Gallery</h1>
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">Manage Gallery</h1>
             <p className="text-gray-600">Upload and manage club photos</p>
           </div>
           <Button onClick={() => setShowUpload(true)} size="lg">
@@ -40,7 +40,7 @@ export default function ManageGallery() {
           </Button>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
           {mockGallery.map((photo) => (
             <Card key={photo.id} className="overflow-hidden hover:shadow-lg transition">
               <div className="bg-gradient-to-br from-primary/20 to-primary/5 aspect-square flex items-center justify-center group relative">

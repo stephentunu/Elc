@@ -33,33 +33,33 @@ export default function FinanceReport() {
   const balance = totalIncome - totalExpense;
 
   return (
-    <div className="min-h-screen bg-gray-50 p-8">
+    <div className="min-h-screen bg-gray-50 p-4 md:p-6 lg:p-8">
       <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-foreground">Finance Report</h1>
+        <div className="mb-6 md:mb-8">
+          <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground">Finance Report</h1>
           <p className="text-gray-600">Club financial overview and analytics</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6 md:mb-8">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Total Income</p>
-            <p className="text-3xl font-bold text-green-600">KES {totalIncome.toLocaleString()}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-green-600">KES {totalIncome.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-2">Last 6 months</p>
           </Card>
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Total Expenses</p>
-            <p className="text-3xl font-bold text-red-600">KES {totalExpense.toLocaleString()}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-red-600">KES {totalExpense.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-2">Last 6 months</p>
           </Card>
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <p className="text-gray-600 text-sm">Balance</p>
-            <p className="text-3xl font-bold text-primary">KES {balance.toLocaleString()}</p>
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold text-primary">KES {balance.toLocaleString()}</p>
             <p className="text-xs text-gray-500 mt-2">Net position</p>
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <Card className="p-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-6 md:mb-8">
+          <Card className="p-4 md:p-6">
             <h2 className="text-xl font-bold mb-4">Monthly Income vs Expenses</h2>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={monthlyData}>
@@ -74,7 +74,7 @@ export default function FinanceReport() {
             </ResponsiveContainer>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <h2 className="text-xl font-bold mb-4">Fund Balance Trend</h2>
             <ResponsiveContainer width="100%" height={300}>
               <LineChart data={monthlyData}>
@@ -95,7 +95,7 @@ export default function FinanceReport() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <h2 className="text-xl font-bold mb-4">Income by Category</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>
@@ -118,7 +118,7 @@ export default function FinanceReport() {
             </ResponsiveContainer>
           </Card>
 
-          <Card className="p-6">
+          <Card className="p-4 md:p-6">
             <h2 className="text-xl font-bold mb-4">Expenses by Category</h2>
             <ResponsiveContainer width="100%" height={300}>
               <PieChart>

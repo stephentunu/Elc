@@ -25,7 +25,7 @@ export default function Events() {
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <a href="/" className="text-2xl font-bold text-primary">MMU ELC</a>
-          <div className="flex gap-6">
+          <div className="flex gap-4 md:gap-6">
             <a href="/" className="text-foreground hover:text-primary">Home</a>
             <a href="/about" className="text-foreground hover:text-primary">About</a>
             <a href="/members" className="text-foreground hover:text-primary">Members</a>
@@ -68,7 +68,7 @@ export default function Events() {
             </button>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             {filtered.map((event) => (
               <Card key={event.id} className="p-6 hover:shadow-lg transition">
                 <div className="flex items-start justify-between mb-4">
