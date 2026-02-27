@@ -41,17 +41,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify({ email, password }),
       });
 
-      if (!response.ok) throw new Error("Login failed");
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error?.message || "Login failed");
+      }
 
       const data = await response.json();
-      const adminData = data.result?.data?.admin;
+      const adminData = data.result?.data?.admin || data.admin;
 
-      if (adminData) {
+      if (adminData && adminData.email) {
         const newToken = `admin_${Date.now()}`;
         setToken(newToken);
         setAdmin(adminData);
         localStorage.setItem("elc_admin_token", newToken);
         localStorage.setItem("elc_admin", JSON.stringify(adminData));
+      } else {
+        throw new Error("Invalid response format");
       }
     } catch (error) {
       console.error("Login error:", error);
