@@ -1,15 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { AlertCircle, Info, Zap } from "lucide-react";
-
-const mockAnnouncements = [
-  { id: 1, title: "General Meeting Next Friday", content: "All members are invited to our general meeting next Friday at 3 PM in the main hall.", category: "General", priority: "Normal", date: "2024-02-27" },
-  { id: 2, title: "February Contributions Due", content: "Please ensure your February contributions are submitted by end of month. M-Pesa codes required.", category: "Finance", priority: "High", date: "2024-02-26" },
-  { id: 3, title: "Leadership Summit Announcement", content: "We are hosting a leadership summit on March 15th. Registration is now open!", category: "Events", priority: "Normal", date: "2024-02-25" },
-  { id: 4, title: "Urgent: Venue Change for Event", content: "The venue for tomorrow's event has been changed to the conference center. Please share with all attendees.", category: "Urgent", priority: "Urgent", date: "2024-02-24" },
-  { id: 5, title: "New Mentorship Program Launch", content: "We are excited to launch our new mentorship program connecting senior and junior members.", category: "General", priority: "Normal", date: "2024-02-23" },
-];
+import { AlertCircle, Info, Zap, Loader2 } from "lucide-react";
 
 const categoryColors: Record<string, string> = {
   General: "bg-blue-100 text-blue-800",
@@ -25,18 +16,28 @@ const priorityIcons: Record<string, React.ReactNode> = {
 };
 
 export default function Announcements() {
+  const [announcements, setAnnouncements] = useState<any[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("/api/trpc/announcements.list?input=%7B%22json%22%3A%7B%22limit%22%3A50%2C%22offset%22%3A0%7D%7D")
+      .then(r => r.json())
+      .then(d => setAnnouncements(d?.result?.data?.json || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, []);
 
   const filtered = selectedCategory
-    ? mockAnnouncements.filter(a => a.category === selectedCategory)
-    : mockAnnouncements;
+    ? announcements.filter(a => a.category === selectedCategory)
+    : announcements;
 
   return (
     <div className="min-h-screen bg-white">
       <nav className="bg-white border-b border-gray-200 sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <a href="/" className="text-2xl font-bold text-primary">MMU ELC</a>
-          <div className="flex gap-4 md:gap-6">
+          <div className="hidden md:flex gap-4 md:gap-6">
             <a href="/" className="text-foreground hover:text-primary">Home</a>
             <a href="/about" className="text-foreground hover:text-primary">About</a>
             <a href="/members" className="text-foreground hover:text-primary">Members</a>
@@ -57,59 +58,56 @@ export default function Announcements() {
       <section className="py-12">
         <div className="container mx-auto px-4">
           <div className="mb-8 flex gap-2 flex-wrap">
-            <button
-              onClick={() => setSelectedCategory(null)}
-              className={`px-4 py-2 rounded-full font-medium transition ${
-                selectedCategory === null
-                  ? "bg-primary text-white"
-                  : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-              }`}
-            >
-              All
-            </button>
-            {["General", "Finance", "Events", "Urgent"].map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
+            {[null, "General", "Finance", "Events", "Urgent"].map((cat) => (
+              <button key={cat ?? "all"} onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-2 rounded-full font-medium transition ${
-                  selectedCategory === cat
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-gray-800 hover:bg-gray-300"
-                }`}
-              >
-                {cat}
+                  selectedCategory === cat ? "bg-primary text-white" : "bg-gray-200 text-gray-800 hover:bg-gray-300"
+                }`}>
+                {cat ?? "All"}
               </button>
             ))}
           </div>
 
-          <div className="space-y-4">
-            {filtered.map((announcement) => (
-              <Card key={announcement.id} className="p-6 hover:shadow-lg transition border-l-4 border-l-primary">
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex-1">
-                    <h3 className="text-xl font-semibold text-foreground mb-2">{announcement.title}</h3>
-                    <p className="text-gray-600">{announcement.content}</p>
+          {loading ? (
+            <div className="flex items-center justify-center py-20">
+              <Loader2 className="w-10 h-10 animate-spin text-primary" />
+            </div>
+          ) : filtered.length === 0 ? (
+            <div className="text-center py-12">
+              <p className="text-gray-600 text-lg">No announcements found.</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {filtered.map((a) => (
+                <Card key={a.id} className="p-6 hover:shadow-lg transition border-l-4 border-l-primary">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex-1">
+                      <h3 className="text-xl font-semibold text-foreground mb-2">{a.title}</h3>
+                      <p className="text-gray-600">{a.content}</p>
+                    </div>
+                    <div className="flex flex-col gap-2 ml-4">
+                      <span className={`text-xs font-semibold px-3 py-1 rounded-full ${categoryColors[a.category] || "bg-gray-100 text-gray-800"}`}>
+                        {a.category}
+                      </span>
+                      <span className="bg-yellow-100 text-yellow-800 text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1">
+                        {priorityIcons[a.priority]}
+                        {a.priority}
+                      </span>
+                    </div>
                   </div>
-                  <div className="flex gap-2 ml-4">
-                    <Badge className={categoryColors[announcement.category]}>
-                      {announcement.category}
-                    </Badge>
-                    <Badge className="bg-yellow-100 text-yellow-800 flex items-center gap-1">
-                      {priorityIcons[announcement.priority]}
-                      {announcement.priority}
-                    </Badge>
-                  </div>
-                </div>
-                <p className="text-sm text-gray-500">{new Date(announcement.date).toLocaleDateString()}</p>
-              </Card>
-            ))}
-          </div>
+                  <p className="text-sm text-gray-500">
+                    {new Date(a.createdAt).toLocaleDateString("en-KE", { year: "numeric", month: "long", day: "numeric" })}
+                  </p>
+                </Card>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 
       <footer className="bg-gray-900 text-white py-8">
         <div className="container mx-auto px-4 text-center">
-          <p>&copy; 2024 Multimedia University Equity Leaders' Club. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} Multimedia University Equity Leaders' Club. All rights reserved.</p>
         </div>
       </footer>
     </div>

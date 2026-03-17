@@ -1,158 +1,150 @@
-import { int, mysqlEnum, mysqlTable, text, timestamp, varchar, decimal, boolean, date, index } from "drizzle-orm/mysql-core";
+import { sqliteTable, text, integer, real, index } from "drizzle-orm/sqlite-core";
+import { sql } from "drizzle-orm";
 
-/**
- * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
- */
-export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
-  id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
-  openId: varchar("openId", { length: 64 }).notNull().unique(),
+// Users Table
+export const users = sqliteTable("users", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  openId: text("openId").notNull().unique(),
   name: text("name"),
-  email: varchar("email", { length: 320 }),
-  loginMethod: varchar("loginMethod", { length: 64 }),
-  role: mysqlEnum("role", ["user", "admin"]).default("user").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
-  lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  email: text("email"),
+  loginMethod: text("loginMethod"),
+  role: text("role", { enum: ["user", "admin"] }).default("user").notNull(),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
+  updatedAt: text("updatedAt").default(sql`(datetime('now'))`).notNull(),
+  lastSignedIn: text("lastSignedIn").default(sql`(datetime('now'))`).notNull(),
 });
 
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
-// MMU ELC Admin Users Table
-export const admins = mysqlTable("admins", {
-  id: int("id").autoincrement().primaryKey(),
-  email: varchar("email", { length: 320 }).notNull().unique(),
+// Admins Table
+export const admins = sqliteTable("admins", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  email: text("email").notNull().unique(),
   password: text("password").notNull(),
   name: text("name").notNull(),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 });
 
 export type Admin = typeof admins.$inferSelect;
 export type InsertAdmin = typeof admins.$inferInsert;
 
 // Members Table
-export const members = mysqlTable("members", {
-  id: int("id").autoincrement().primaryKey(),
-  membershipId: varchar("membershipId", { length: 50 }).notNull().unique(),
+export const members = sqliteTable("members", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  membershipId: text("membershipId").notNull().unique(),
   fullName: text("fullName").notNull(),
-  email: varchar("email", { length: 320 }).notNull().unique(),
-  phone: varchar("phone", { length: 20 }),
-  studentId: varchar("studentId", { length: 50 }).unique(),
+  email: text("email").notNull().unique(),
+  phone: text("phone"),
+  studentId: text("studentId").unique(),
   course: text("course"),
-  yearOfStudy: int("yearOfStudy"),
-  role: varchar("role", { length: 50 }).default("Member"),
+  yearOfStudy: integer("yearOfStudy"),
+  role: text("role").default("Member"),
   photoUrl: text("photoUrl"),
-  status: varchar("status", { length: 50 }).default("Active"),
-  joinedDate: date("joinedDate"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  status: text("status").default("Active"),
+  joinedDate: text("joinedDate"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 }, (table) => [index("idx_status").on(table.status)]);
 
 export type Member = typeof members.$inferSelect;
 export type InsertMember = typeof members.$inferInsert;
 
 // Contributions Table
-export const contributions = mysqlTable("contributions", {
-  id: int("id").autoincrement().primaryKey(),
-  memberId: int("memberId").notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
-  paymentType: varchar("paymentType", { length: 50 }).default("Subscription"),
-  month: varchar("month", { length: 50 }).notNull(),
-  year: int("year").notNull(),
-  status: varchar("status", { length: 50 }).default("Paid"),
-  mpesaCode: varchar("mpesaCode", { length: 100 }),
-  recordedBy: int("recordedBy"),
+export const contributions = sqliteTable("contributions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  memberId: integer("memberId").notNull(),
+  amount: real("amount").notNull(),
+  paymentType: text("paymentType").default("Subscription"),
+  month: text("month").notNull(),
+  year: integer("year").notNull(),
+  status: text("status").default("Paid"),
+  mpesaCode: text("mpesaCode"),
+  recordedBy: integer("recordedBy"),
   notes: text("notes"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 }, (table) => [index("idx_member_month_year").on(table.memberId, table.month, table.year)]);
 
 export type Contribution = typeof contributions.$inferSelect;
 export type InsertContribution = typeof contributions.$inferInsert;
 
 // Announcements Table
-export const announcements = mysqlTable("announcements", {
-  id: int("id").autoincrement().primaryKey(),
+export const announcements = sqliteTable("announcements", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   content: text("content").notNull(),
-  category: varchar("category", { length: 50 }).default("General"),
-  priority: varchar("priority", { length: 50 }).default("Normal"),
-  isPublished: boolean("isPublished").default(true),
+  category: text("category").default("General"),
+  priority: text("priority").default("Normal"),
+  isPublished: integer("isPublished", { mode: "boolean" }).default(true),
   imageUrl: text("imageUrl"),
-  postedBy: int("postedBy"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
-  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+  postedBy: integer("postedBy"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
+  updatedAt: text("updatedAt").default(sql`(datetime('now'))`).notNull(),
 }, (table) => [index("idx_published").on(table.isPublished)]);
 
 export type Announcement = typeof announcements.$inferSelect;
 export type InsertAnnouncement = typeof announcements.$inferInsert;
 
 // Events Table
-export const events = mysqlTable("events", {
-  id: int("id").autoincrement().primaryKey(),
+export const events = sqliteTable("events", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   description: text("description"),
-  eventDate: date("eventDate").notNull(),
-  eventTime: varchar("eventTime", { length: 50 }),
+  eventDate: text("eventDate").notNull(),
+  eventTime: text("eventTime"),
   venue: text("venue"),
-  category: varchar("category", { length: 50 }).default("Meeting"),
+  category: text("category").default("Meeting"),
   imageUrl: text("imageUrl"),
-  isPublished: boolean("isPublished").default(true),
-  createdBy: int("createdBy"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  isPublished: integer("isPublished", { mode: "boolean" }).default(true),
+  createdBy: integer("createdBy"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 }, (table) => [index("idx_event_date").on(table.eventDate)]);
 
 export type Event = typeof events.$inferSelect;
 export type InsertEvent = typeof events.$inferInsert;
 
 // Gallery Table
-export const gallery = mysqlTable("gallery", {
-  id: int("id").autoincrement().primaryKey(),
+export const gallery = sqliteTable("gallery", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
   imageUrl: text("imageUrl").notNull(),
   caption: text("caption"),
-  eventId: int("eventId"),
-  uploadedBy: int("uploadedBy"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  eventId: integer("eventId"),
+  uploadedBy: integer("uploadedBy"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 });
 
 export type GalleryImage = typeof gallery.$inferSelect;
 export type InsertGalleryImage = typeof gallery.$inferInsert;
 
 // Meeting Minutes Table
-export const meetingMinutes = mysqlTable("meetingMinutes", {
-  id: int("id").autoincrement().primaryKey(),
+export const meetingMinutes = sqliteTable("meetingMinutes", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
   title: text("title").notNull(),
-  meetingDate: date("meetingDate").notNull(),
+  meetingDate: text("meetingDate").notNull(),
   agenda: text("agenda"),
   minutesContent: text("minutesContent").notNull(),
   attendees: text("attendees"),
   decisions: text("decisions"),
-  nextMeetingDate: date("nextMeetingDate"),
-  recordedBy: int("recordedBy"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  nextMeetingDate: text("nextMeetingDate"),
+  recordedBy: integer("recordedBy"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 });
 
 export type MeetingMinutes = typeof meetingMinutes.$inferSelect;
 export type InsertMeetingMinutes = typeof meetingMinutes.$inferInsert;
 
 // Fund Transactions Table
-export const fundTransactions = mysqlTable("fundTransactions", {
-  id: int("id").autoincrement().primaryKey(),
-  type: mysqlEnum("type", ["Income", "Expense"]).notNull(),
-  amount: decimal("amount", { precision: 10, scale: 2 }).notNull(),
+export const fundTransactions = sqliteTable("fundTransactions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  type: text("type", { enum: ["Income", "Expense"] }).notNull(),
+  amount: real("amount").notNull(),
   description: text("description").notNull(),
-  category: varchar("category", { length: 100 }),
-  reference: varchar("reference", { length: 100 }),
-  transactionDate: date("transactionDate"),
-  balanceAfter: decimal("balanceAfter", { precision: 10, scale: 2 }),
-  recordedBy: int("recordedBy"),
-  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  category: text("category"),
+  reference: text("reference"),
+  transactionDate: text("transactionDate"),
+  balanceAfter: real("balanceAfter"),
+  recordedBy: integer("recordedBy"),
+  createdAt: text("createdAt").default(sql`(datetime('now'))`).notNull(),
 }, (table) => [index("idx_type_date").on(table.type, table.transactionDate)]);
 
 export type FundTransaction = typeof fundTransactions.$inferSelect;

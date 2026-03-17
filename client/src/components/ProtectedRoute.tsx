@@ -1,6 +1,6 @@
 import React from "react";
 import { useAuth } from "@/contexts/AuthContext";
-import { useLocation } from "wouter";
+import { Redirect } from "wouter";
 import { Loader2 } from "lucide-react";
 
 interface ProtectedRouteProps {
@@ -9,7 +9,6 @@ interface ProtectedRouteProps {
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   const { isAuthenticated, loading } = useAuth();
-  const [, setLocation] = useLocation();
 
   if (loading) {
     return (
@@ -20,8 +19,7 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   }
 
   if (!isAuthenticated) {
-    setLocation("/admin/login");
-    return null;
+    return <Redirect to="/admin/login" />;
   }
 
   return <>{children}</>;

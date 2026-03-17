@@ -1,19 +1,12 @@
 {
   "version": "7",
-  "dialect": "mysql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "5",
-      "when": 1772195856687,
-      "tag": "0000_zippy_mikhail_rasputin",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "5",
-      "when": 1772196005749,
-      "tag": "0001_fantastic_joseph",
+      "version": "6",
+      "when": 1773513475258,
+      "tag": "0000_soft_vindicator",
       "breakpoints": true
     }
   ]

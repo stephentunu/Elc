@@ -1,5 +1,22 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 
+// Patch fetch to include admin auth headers on all tRPC requests
+const originalFetch = window.fetch;
+window.fetch = function(input: RequestInfo | URL, init?: RequestInit) {
+  const token = localStorage.getItem("elc_admin_token");
+  const adminStr = localStorage.getItem("elc_admin");
+  if (token && adminStr && typeof input === "string" && input.includes("/api/trpc")) {
+    const admin = JSON.parse(adminStr);
+    init = init || {};
+    init.headers = {
+      ...init.headers,
+      "x-admin-token": token,
+      "x-admin-email": admin.email,
+    };
+  }
+  return originalFetch(input, init as RequestInit);
+};
+
 interface Admin {
   id: number;
   name: string;
@@ -22,7 +39,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Load token from localStorage on mount
   useEffect(() => {
     const savedToken = localStorage.getItem("elc_admin_token");
     const savedAdmin = localStorage.getItem("elc_admin");
@@ -38,7 +54,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await fetch("/api/trpc/auth.adminLogin", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
+        body: JSON.stringify({ json: { email, password } }),
       });
 
       if (!response.ok) {
@@ -47,17 +63,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       const data = await response.json();
-      const adminData = data.result?.data?.admin || data.admin;
+      const adminData = data?.result?.data?.json?.admin;
 
-      if (adminData && adminData.email) {
-        const newToken = `admin_${Date.now()}`;
-        setToken(newToken);
-        setAdmin(adminData);
-        localStorage.setItem("elc_admin_token", newToken);
-        localStorage.setItem("elc_admin", JSON.stringify(adminData));
-      } else {
+      if (!adminData || !adminData.email) {
         throw new Error("Invalid response format");
       }
+
+      const newToken = `admin_${Date.now()}`;
+      setToken(newToken);
+      setAdmin(adminData);
+      localStorage.setItem("elc_admin_token", newToken);
+      localStorage.setItem("elc_admin", JSON.stringify(adminData));
+
     } catch (error) {
       console.error("Login error:", error);
       throw error;

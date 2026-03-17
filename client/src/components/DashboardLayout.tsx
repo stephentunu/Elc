@@ -21,15 +21,23 @@ import {
 } from "@/components/ui/sidebar";
 import { getLoginUrl } from "@/const";
 import { useIsMobile } from "@/hooks/useMobile";
-import { LayoutDashboard, LogOut, PanelLeft, Users } from "lucide-react";
+import { LayoutDashboard, LogOut, PanelLeft, Users, DollarSign, Megaphone, Calendar, FileText, Image, Settings, TrendingUp, UserPlus } from "lucide-react";
 import { CSSProperties, useEffect, useRef, useState } from "react";
 import { useLocation } from "wouter";
 import { DashboardLayoutSkeleton } from './DashboardLayoutSkeleton';
 import { Button } from "./ui/button";
 
 const menuItems = [
-  { icon: LayoutDashboard, label: "Page 1", path: "/" },
-  { icon: Users, label: "Page 2", path: "/some-path" },
+  { icon: LayoutDashboard, label: "Dashboard", path: "/admin/dashboard" },
+  { icon: Users, label: "Members", path: "/admin/members" },
+  { icon: UserPlus, label: "Add Member", path: "/admin/members/add" },
+  { icon: DollarSign, label: "Contributions", path: "/admin/contributions" },
+  { icon: TrendingUp, label: "Finance Report", path: "/admin/finance" },
+  { icon: Megaphone, label: "Announcements", path: "/admin/announcements" },
+  { icon: Calendar, label: "Events", path: "/admin/events" },
+  { icon: FileText, label: "Meeting Minutes", path: "/admin/minutes" },
+  { icon: Image, label: "Gallery", path: "/admin/gallery" },
+  { icon: Settings, label: "Settings", path: "/admin/settings" },
 ];
 
 const SIDEBAR_WIDTH_KEY = "sidebar-width";
