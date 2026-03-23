@@ -111,6 +111,7 @@ export default function AddMember() {
                   <option value="2">Year 2</option>
                   <option value="3">Year 3</option>
                   <option value="4">Year 4</option>
+                  <option value="5">Year 5</option>
                 </select>
               </div>
             </div>
@@ -124,7 +125,14 @@ export default function AddMember() {
                 <option value="Vice Chairperson">Vice Chairperson</option>
                 <option value="Secretary">Secretary</option>
                 <option value="Treasurer">Treasurer</option>
-                <option value="PR Officer">PR Officer</option>
+                <option value="Alumni Manager">Alumni Manager</option>
+                <option value="Mentorship Coordinator">Mentorship Coordinator</option>
+                <option value="Event Organiser">Event Organiser</option>
+                <option value="First Year Representative">First Year Representative</option>
+                <option value="Second Year Representative">Second Year Representative</option>
+                <option value="Third Year Representative">Third Year Representative</option>
+                <option value="Fourth Year Representative">Fourth Year Representative</option>
+                <option value="Fith Year Representative">Fifth Year Representative</option>
               </select>
             </div>
             <div className="flex gap-4 pt-4">
